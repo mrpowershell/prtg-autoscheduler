@@ -197,6 +197,7 @@ function Get-Excelpath
         $tb_excelpath.Text = Get-FileName
 }
 
+#Function to write an Error or Notification to the GUI
 function writenotification($text)
 
 {
@@ -204,6 +205,7 @@ function writenotification($text)
     $l_notification.Text = $text
 }
 
+#Function to clear the Selections in the GUI
 function clearselections()
 {
     #clearing Selections
@@ -212,7 +214,8 @@ function clearselections()
     $lb_specialday.ClearSelected() #Creates an error but works, ignore atm
 }
 
-function updateview($setting) #Updates the GUI depending on the current option
+#Updates the GUI depending on the current option
+function updateview($setting) 
 {
     if ($setting -eq "0")
     {
@@ -235,14 +238,14 @@ function updateview($setting) #Updates the GUI depending on the current option
     }
 }
 
-
+#Function to Set the Marks according from the Options in the Excel File
 function setmarks()
 {
     #Load the PRTG Defaults
     if ($cb_select_template.SelectedItem -eq "Default Template")
     {
         updateview(0)
-        $exceldata = Import-Excel -WorksheetName PRTGDEFAULT_SETTING -path c:\temp\scheduler_config.xlsx
+        $exceldata = Import-Excel -WorksheetName PRTGDEFAULT_SETTING -path $tb_excelpath.Text
         clearselections
 
         #Select the Hours according to the Values in the Excel
@@ -262,13 +265,13 @@ function setmarks()
 
     }
 
-    #Load Selections for the Special Days
+    #Load Selections for the Public Holidays
     if ($cb_select_template.SelectedItem -eq "Public Holiday Template")
     {
         clearselections
         updateview(1)
 
-        $exceldata = Import-Excel -WorksheetName PRTGSPECIALDAY_SETTING -path c:\temp\scheduler_config.xlsx
+        $exceldata = Import-Excel -WorksheetName PRTGSPECIALDAY_SETTING -path $tb_excelpath.Text
         
         #Select the Hours according to the Values in the Excel
         foreach ($entry in $exceldata)
@@ -285,7 +288,7 @@ function setmarks()
         clearselections
         updateview(2)
 
-        $exceldata = Import-Excel -WorksheetName CUSTOM -path c:\temp\scheduler_config.xlsx
+        $exceldata = Import-Excel -WorksheetName CUSTOM -path $tb_excelpath.Text
         
         #Select the Hours according to the Values in the Excel
         foreach ($entry in $exceldata)
@@ -301,21 +304,20 @@ function setmarks()
     
 }
 
-function writebacktoexcel() #Writes back the Settings to the Excel according to the Userinput
+#Writes back the Settings to the Excel according to the User selection
+function writebacktoexcel() 
 {
     if ($cb_select_template.SelectedItem -eq "Default Template")
     {
-        $exceldata = Import-Excel -WorksheetName PRTGDEFAULT_SETTING -path c:\temp\scheduler_config.xlsx
-
-        #Get Userselection from GUI
-        $selectionsMOFR = $lb_mo_to_fr.SelectedItems
-        $selectionsSASO = $lb_sa_to_su.SelectedItems
+        $exceldata = Import-Excel -WorksheetName PRTGDEFAULT_SETTING -path $tb_excelpath.Text
 
         foreach ($entry in $exceldata)
         {
+ 
+            #Searching for Selection
             $searchresultMOFR = $lb_mo_to_fr.SelectedItems | Select-String -Pattern $entry.Hour #Check if selection matches
-            $searchresultSASU = $lb_sa_to_su.SelectedItems | Select-String -Pattern $entry.Hour 
-
+            $searchresultSASU = $lb_sa_to_su.SelectedItems | Select-String -Pattern $entry.Hour
+            
             #Writeback data to Excelobject
             if ($searchresultSASU -ne $null)
             {
@@ -335,17 +337,13 @@ function writebacktoexcel() #Writes back the Settings to the Excel according to 
             }
             
         }
-        Export-Excel -inputobject $exceldata -WorksheetName PRTGDEFAULT_SETTING -path c:\temp\scheduler_config.xlsx   
+        Export-Excel -inputobject $exceldata -WorksheetName PRTGDEFAULT_SETTING -path $tb_excelpath.Text   
     }
 
     if ($cb_select_template.SelectedItem -eq "Public Holiday Template" -or $cb_select_template.SelectedItem -eq "Custom Template 1") #Same routine for both as they are similiar
     {
-        if ($cb_select_template.SelectedItem -eq "Public Holiday Template" ){ $exceldata = Import-Excel -WorksheetName PRTGSPECIALDAY_SETTING -path c:\temp\scheduler_config.xlsx }
-        if ($cb_select_template.SelectedItem -eq "Custom Template 1" ){ $exceldata = Import-Excel -WorksheetName CUSTOM -path c:\temp\scheduler_config.xlsx }
-
-        #Get Userselection from GUI
-        $selections_sd = $lb_specialday.SelectedItems
-
+        if ($cb_select_template.SelectedItem -eq "Public Holiday Template" ){ $exceldata = Import-Excel -WorksheetName PRTGSPECIALDAY_SETTING -path $tb_excelpath.Text }
+        if ($cb_select_template.SelectedItem -eq "Custom Template 1" ){ $exceldata = Import-Excel -WorksheetName CUSTOM -path $tb_excelpath.Text }
 
         foreach ($entry in $exceldata)
         {
@@ -363,28 +361,29 @@ function writebacktoexcel() #Writes back the Settings to the Excel according to 
             
         }
 
-        if ($cb_select_template.SelectedItem -eq "Public Holiday Template" ){ Export-Excel -inputobject $exceldata -WorksheetName PRTGSPECIALDAY_SETTING -path c:\temp\scheduler_config.xlsx }
-        if ($cb_select_template.SelectedItem -eq "Custom Template 1" ){ Export-Excel -inputobject $exceldata -WorksheetName CUSTOM -path c:\temp\scheduler_config.xlsx } 
+        if ($cb_select_template.SelectedItem -eq "Public Holiday Template" ){ Export-Excel -inputobject $exceldata -WorksheetName PRTGSPECIALDAY_SETTING -path $tb_excelpath.Text }
+        if ($cb_select_template.SelectedItem -eq "Custom Template 1" ){ Export-Excel -inputobject $exceldata -WorksheetName CUSTOM -path $tb_excelpath.Text } 
     }    
 }
 
 #Function to Save custom Dates and the Settings to Excel
 function savedate($date)
 {
-    $exceldata = Import-Excel -WorksheetName SPECIALDAYS -path c:\temp\scheduler_config.xlsx
+    $exceldata = Import-Excel -WorksheetName SPECIALDAYS -path $tb_excelpath.Text
     $search = $exceldata | Where-Object {$_.DATE -eq $date}
 
     if (!$search)
     {
         $exceldata = $exceldata + @{DATE="$date";CUSTOMSETTINGS="0"}
         $search = $exceldata | Where-Object {$_.DATE -eq $date}
-        if ($cb_template.SelectedItem -eq "Feiertag") {$search.CUSTOMSETTINGS = 1}
-        if ($cb_template.SelectedItem -eq "Custom") {$search.CUSTOMSETTINGS = 2}
+        if ($cb_select_template_day.SelectedItem -eq "Public Holiday Template") {$search.CUSTOMSETTINGS = 1}
+        if ($cb_select_template_day.SelectedItem -eq "Custom Template 1") {$search.CUSTOMSETTINGS = 2}
     }
-    if ($cb_template.SelectedItem -eq "Feiertag") {$search.CUSTOMSETTINGS = 1}
-    if ($cb_template.SelectedItem -eq "Custom") {$search.CUSTOMSETTINGS = 2}
+    if ($cb_select_template_day.SelectedItem -eq "Public Holiday Template") {$search.CUSTOMSETTINGS = 1}
+    if ($cb_select_template_day.SelectedItem -eq "Custom Template 1") {$search.CUSTOMSETTINGS = 2}
+    if ($cb_select_template_day.SelectedItem -eq "Default Template") {$search.CUSTOMSETTINGS = 0}
 
-    Export-Excel -inputobject $exceldata -WorksheetName SPECIALDAYS -path c:\temp\scheduler_config.xlsx
+    Export-Excel -inputobject $exceldata -WorksheetName SPECIALDAYS -path $tb_excelpath.Text
 
 }
 
@@ -396,6 +395,7 @@ function savedate($date)
     the trust fails
 #>
 
+<# DISABELD FOR THE MOMENT, Function not yet implemented
 if(!(Get-PrtgClient))
 {
     Connect-PrtgServer $prtgserver (New-Credential $prtguser $prtguserhash) -PassHash -IgnoreSSL -Force
@@ -413,7 +413,7 @@ try
 catch
 {
     writenotification("Unable to fetch Schedules, Please check the PRTG Server settings")
-}
+}#>
 
 
 
@@ -422,19 +422,25 @@ catch
 
 $b_load_template.Add_Click(
 {
-    setmarks   
+    if ($tb_excelpath.Text -ne "") {setmarks}
+    else { writenotification("Please select Excel first.") }
 })
 
 $b_save_settings.Add_Click(
 {
-    writebacktoexcel
+    if ($tb_excelpath.Text -ne "") {writebacktoexcel}
+    else { writenotification("Please select Excel first.") }
 })
 
 $b_save_date.Add_Click(
 {
-    $dateinput = $calendar.SelectionStart
-    $dateshort = $dateinput.ToShortDateString()
-    savedate($dateshort)
+    if ($tb_excelpath.Text -ne "")
+    {
+        $dateinput = $calendar.SelectionStart
+        $dateshort = $dateinput.ToShortDateString()
+        savedate($dateshort)
+    }
+    else { writenotification("Please select Excel first.") }
     
 })
 
