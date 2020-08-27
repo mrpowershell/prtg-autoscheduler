@@ -10,13 +10,17 @@ Install-Package ImportExcel
 
 #### GLOBAL VARS ####
 
+#Define the Servername, User and the passhash which the programm uses to connect to PRTG
 
-$excelpath = "c:\temp\scheduler_config.xlsx"
+$prtgserver = "127.0.0.1"
+$prtguser="prtgadmin"
+$prtguserhash = "3477709542"
 
-<# This form was created using POSHGUI.com  a free online gui designer for PowerShell
-.NAME
-    PRTG Scheduler GUI V2
-#>
+
+################  MAIN CODE, DO NOT EDIT THE CODE BELOW THIS LINE   ################
+
+# This form was created using POSHGUI.com  a free online gui designer for PowerShell
+
 
 Add-Type -AssemblyName System.Windows.Forms
 [System.Windows.Forms.Application]::EnableVisualStyles()
@@ -27,153 +31,178 @@ $form_PRTGSCHEDULER.text         = "PRTG Scheduler GUI"
 $form_PRTGSCHEDULER.TopMost      = $false
 
 $l_selectscheduler               = New-Object system.Windows.Forms.Label
-$l_selectscheduler.text          = "Scheduler auswählen"
+$l_selectscheduler.text          = "Select Schedule:"
 $l_selectscheduler.AutoSize      = $true
 $l_selectscheduler.width         = 25
 $l_selectscheduler.height        = 10
-$l_selectscheduler.location      = New-Object System.Drawing.Point(15,26)
+$l_selectscheduler.location      = New-Object System.Drawing.Point(41,26)
 $l_selectscheduler.Font          = New-Object System.Drawing.Font('Microsoft Sans Serif',10)
 
 $lb_mo_to_fr                     = New-Object system.Windows.Forms.ListBox
-$lb_mo_to_fr.text                = "listBox"
 $lb_mo_to_fr.width               = 80
 $lb_mo_to_fr.height              = 337
 @('00:00','01:00','02:00','03:00','04:00','05:00','06:00','07:00','08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00','21:00','22:00','23:00') | ForEach-Object {[void] $lb_mo_to_fr.Items.Add($_)}
-$lb_mo_to_fr.location            = New-Object System.Drawing.Point(113,125)
-$lb_mo_to_fr.SelectionMode       = 'MultiExtended'
-
-$l_optionchoose                  = New-Object system.Windows.Forms.Label
-$l_optionchoose.text             = "Option wählen"
-$l_optionchoose.AutoSize         = $true
-$l_optionchoose.width            = 25
-$l_optionchoose.height           = 10
-$l_optionchoose.location         = New-Object System.Drawing.Point(418,26)
-$l_optionchoose.Font             = New-Object System.Drawing.Font('Microsoft Sans Serif',10)
+$lb_mo_to_fr.location            = New-Object System.Drawing.Point(138,97)
+$lb_mo_to_fr.SelectionMode     = 'MultiExtended'
 
 $lb_sa_to_su                     = New-Object system.Windows.Forms.ListBox
-$lb_sa_to_su.text                = "listBox"
 $lb_sa_to_su.width               = 80
 $lb_sa_to_su.height              = 337
 @('00:00','01:00','02:00','03:00','04:00','05:00','06:00','07:00','08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00','21:00','22:00','23:00') | ForEach-Object {[void] $lb_sa_to_su.Items.Add($_)}
-$lb_sa_to_su.location            = New-Object System.Drawing.Point(206,125)
-$lb_sa_to_su.SelectionMode       = 'MultiExtended'
+$lb_sa_to_su.location            = New-Object System.Drawing.Point(231,97)
+$lb_sa_to_su.SelectionMode     = 'MultiExtended'
 
-$cb_action                       = New-Object system.Windows.Forms.ComboBox
-$cb_action.text                  = "Aktion wählen"
-$cb_action.width                 = 155
-$cb_action.height                = 20
-@('Standard editieren','Feiertag editieren','Custom Eintrag editieren') | ForEach-Object {[void] $cb_action.Items.Add($_)}
-$cb_action.location              = New-Object System.Drawing.Point(514,24)
-$cb_action.Font                  = New-Object System.Drawing.Font('Microsoft Sans Serif',10)
+$cb_select_template              = New-Object system.Windows.Forms.ComboBox
+$cb_select_template.text         = "Template"
+$cb_select_template.width        = 155
+$cb_select_template.height       = 20
+@('Default Template','Public Holiday Template','Custom Template 1') | ForEach-Object {[void] $cb_select_template.Items.Add($_)}
+$cb_select_template.location     = New-Object System.Drawing.Point(52,31)
+$cb_select_template.Font         = New-Object System.Drawing.Font('Microsoft Sans Serif',10)
 
 $cb_scheduler                    = New-Object system.Windows.Forms.ComboBox
-$cb_scheduler.text               = "Scheduler auswählen"
 $cb_scheduler.width              = 241
 $cb_scheduler.height             = 20
 $cb_scheduler.location           = New-Object System.Drawing.Point(158,24)
 $cb_scheduler.Font               = New-Object System.Drawing.Font('Microsoft Sans Serif',10)
 
 $b_save_settings                 = New-Object system.Windows.Forms.Button
-$b_save_settings.text            = "Einstellung übernehmen"
+$b_save_settings.text            = "Save Template"
 $b_save_settings.width           = 169
 $b_save_settings.height          = 30
-$b_save_settings.location        = New-Object System.Drawing.Point(114,488)
+$b_save_settings.location        = New-Object System.Drawing.Point(99,462)
 $b_save_settings.Font            = New-Object System.Drawing.Font('Microsoft Sans Serif',10)
 
-$b_load_option                   = New-Object system.Windows.Forms.Button
-$b_load_option.text              = "Option laden"
-$b_load_option.width             = 154
-$b_load_option.height            = 30
-$b_load_option.location          = New-Object System.Drawing.Point(515,51)
-$b_load_option.Font              = New-Object System.Drawing.Font('Microsoft Sans Serif',10)
+$b_load_template                 = New-Object system.Windows.Forms.Button
+$b_load_template.text            = "Load"
+$b_load_template.width           = 75
+$b_load_template.height          = 30
+$b_load_template.location        = New-Object System.Drawing.Point(234,26)
+$b_load_template.Font            = New-Object System.Drawing.Font('Microsoft Sans Serif',10)
 
 $l_mo_to_fr_or_custom            = New-Object system.Windows.Forms.Label
 $l_mo_to_fr_or_custom.text       = "MO-FR"
 $l_mo_to_fr_or_custom.AutoSize   = $true
 $l_mo_to_fr_or_custom.width      = 25
 $l_mo_to_fr_or_custom.height     = 10
-$l_mo_to_fr_or_custom.location   = New-Object System.Drawing.Point(130,96)
+$l_mo_to_fr_or_custom.location   = New-Object System.Drawing.Point(157,68)
 $l_mo_to_fr_or_custom.Font       = New-Object System.Drawing.Font('Microsoft Sans Serif',10)
 
-
 $l_sa_to_su                      = New-Object system.Windows.Forms.Label
-$l_sa_to_su.text                 = "SA-SO"
+$l_sa_to_su.text                 = "SA-SU"
 $l_sa_to_su.AutoSize             = $true
 $l_sa_to_su.width                = 25
 $l_sa_to_su.height               = 10
-$l_sa_to_su.location             = New-Object System.Drawing.Point(221,96)
+$l_sa_to_su.location             = New-Object System.Drawing.Point(248,68)
 $l_sa_to_su.Font                 = New-Object System.Drawing.Font('Microsoft Sans Serif',10)
 
 $lb_specialday                   = New-Object system.Windows.Forms.ListBox
-$lb_specialday.text              = "listBox"
 $lb_specialday.width             = 80
 $lb_specialday.height            = 337
 @('00:00','01:00','02:00','03:00','04:00','05:00','06:00','07:00','08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00','21:00','22:00','23:00') | ForEach-Object {[void] $lb_specialday.Items.Add($_)}
-$lb_specialday.location          = New-Object System.Drawing.Point(21,125)
-$lb_specialday.Visible           = $false
+$lb_specialday.location          = New-Object System.Drawing.Point(46,97)
 $lb_specialday.SelectionMode     = 'MultiExtended'
 
 $l_specialday                    = New-Object system.Windows.Forms.Label
-$l_specialday.text               = "Feiertag"
+$l_specialday.text               = "Holiday"
 $l_specialday.AutoSize           = $true
 $l_specialday.width              = 25
 $l_specialday.height             = 10
-$l_specialday.location           = New-Object System.Drawing.Point(35,96)
+$l_specialday.location           = New-Object System.Drawing.Point(62,68)
 $l_specialday.Font               = New-Object System.Drawing.Font('Microsoft Sans Serif',10)
-$l_specialday.Visible            = $false
 
-$cb_template                     = New-Object system.Windows.Forms.ComboBox
-$cb_template.text                = "Template wählen"
-$cb_template.width               = 155
-$cb_template.height              = 20
-@('Feiertag','Custom') | ForEach-Object {[void] $cb_template.Items.Add($_)}
-$cb_template.location            = New-Object System.Drawing.Point(514,125)
-$cb_template.Font                = New-Object System.Drawing.Font('Microsoft Sans Serif',10)
+$l_notification                  = New-Object system.Windows.Forms.Label
+$l_notification.AutoSize         = $false
+$l_notification.visible          = $false
+$l_notification.width            = 25
+$l_notification.height           = 20
+$l_notification.Anchor           = 'left'
+$l_notification.Textalign        = 'MiddleCenter'
+$l_notification.Dock             = 'Bottom'
+$l_notification.location         = New-Object System.Drawing.Point(363,602)
+$l_notification.Font             = New-Object System.Drawing.Font('Microsoft Sans Serif',10)
+$l_notification.ForeColor        = [System.Drawing.ColorTranslator]::FromHtml("#ff0000")
+
+$gb_savetemplate                 = New-Object system.Windows.Forms.Groupbox
+$gb_savetemplate.height          = 529
+$gb_savetemplate.width           = 361
+$gb_savetemplate.text            = "Edit Template"
+$gb_savetemplate.location        = New-Object System.Drawing.Point(14,70)
+
+$tb_excelpath                        = New-Object system.Windows.Forms.TextBox
+$tb_excelpath.multiline              = $false
+$tb_excelpath.width                  = 201
+$tb_excelpath.height                 = 20
+$tb_excelpath.location               = New-Object System.Drawing.Point(559,24)
+$tb_excelpath.Font                   = New-Object System.Drawing.Font('Microsoft Sans Serif',10)
+
+$b_select_excel                  = New-Object system.Windows.Forms.Button
+$b_select_excel.text             = "Select Excel"
+$b_select_excel.width            = 112
+$b_select_excel.height           = 30
+$b_select_excel.location         = New-Object System.Drawing.Point(426,20)
+$b_select_excel.Font             = New-Object System.Drawing.Font('Microsoft Sans Serif',10)
+
+$gb_update_date                  = New-Object system.Windows.Forms.Groupbox
+$gb_update_date.height           = 307
+$gb_update_date.width            = 376
+$gb_update_date.text             = "Apply Template to Date"
+$gb_update_date.location         = New-Object System.Drawing.Point(390,70)
+
+$cb_select_template_day          = New-Object system.Windows.Forms.ComboBox
+$cb_select_template_day.text     = "Template"
+$cb_select_template_day.width    = 155
+$cb_select_template_day.height   = 20
+@('Default Template','Public Holiday Template','Custom Template 1') | ForEach-Object {[void] $cb_select_template_day.Items.Add($_)}
+$cb_select_template_day.location  = New-Object System.Drawing.Point(209,31)
+$cb_select_template_day.Font     = New-Object System.Drawing.Font('Microsoft Sans Serif',10)
 
 $b_save_date                     = New-Object system.Windows.Forms.Button
-$b_save_date.text                = "Einstellung speichern"
-$b_save_date.width               = 154
+$b_save_date.text                = "Apply Template"
+$b_save_date.width               = 155
 $b_save_date.height              = 30
-$b_save_date.location            = New-Object System.Drawing.Point(515,153)
+$b_save_date.location            = New-Object System.Drawing.Point(209,63)
 $b_save_date.Font                = New-Object System.Drawing.Font('Microsoft Sans Serif',10)
 
 $calendar = New-Object Windows.Forms.MonthCalendar -Property @{
     ShowTodayCircle   = $true
     MaxSelectionCount = 1
-    location = New-Object System.Drawing.Point(310,124)
+    location = New-Object System.Drawing.Point(8,30)
 }
 
-$form_PRTGSCHEDULER.controls.AddRange(@($b_save_date,$cb_template,$l_specialday,$lb_specialday,$calendar,$l_selectscheduler,$lb_mo_to_fr,$l_optionchoose,$lb_sa_to_su,$cb_action,$cb_scheduler,$b_save_settings,$b_load_option,$l_mo_to_fr_or_custom,$l_sa_to_su))
+$form_PRTGSCHEDULER.controls.AddRange(@($l_selectscheduler,$cb_scheduler,$l_notification,$gb_savetemplate,$tb_excelpath,$b_select_excel,$gb_update_date))
+$gb_savetemplate.controls.AddRange(@($lb_mo_to_fr,$lb_sa_to_su,$cb_select_template,$b_save_settings,$b_load_template,$l_mo_to_fr_or_custom,$l_sa_to_su,$lb_specialday,$l_specialday))
+$gb_update_date.controls.AddRange(@($calendar,$cb_select_template_day,$b_save_date))
+
 
 #END OF GUICODE
 
-################  Steps before the GUI loads  ################
-
-<#
-    Connect to PRTG Server with Passhash Methode, 
-    -Ignoressl is for testing, without it the connection will fail if
-    the trust fails
-#>
-
-if(!(Get-PrtgClient))
-{
-    Connect-PrtgServer 127.0.0.1 (New-Credential prtgadmin 3477709542) -PassHash -IgnoreSSL -Force
-}
-
-#Filling Scheduler Selection in GUI Form
-
-foreach ($schedule in (Get-PrtgSchedule))
-{
-    $cb_scheduler.Items.Add($schedule)
-   
-}
-
-
-
-
-
-
 ################  MAIN FUNCTIONS  ################
+
+#Function to get Filepath of Excels
+Function Get-FileName($initialDirectory)
+{   
+    [System.Reflection.Assembly]::LoadWithPartialName("System.windows.forms") |
+    Out-Null
+
+    $OpenFileDialog = New-Object System.Windows.Forms.OpenFileDialog
+    $OpenFileDialog.filter = "xlsx (*.xlsx)| *.xlsx"
+    $OpenFileDialog.ShowDialog() | Out-Null
+    $OpenFileDialog.filename
+}
+
+#Function to get and sed Excelpath from GUI
+function Get-Excelpath
+{
+        $tb_excelpath.Text = Get-FileName
+}
+
+function writenotification($text)
+
+{
+    $l_notification.Visible = $true
+    $l_notification.Text = $text
+}
 
 function clearselections()
 {
@@ -187,30 +216,20 @@ function updateview($setting) #Updates the GUI depending on the current option
 {
     if ($setting -eq "0")
     {
-        $l_specialday.text = "Feiertag"
-        $l_specialday.Visible = $true
-        $lb_specialday.Visible = $true
-        $lb_sa_to_su.Visible = $false
-        $lb_MO_to_FR.Visible = $false
-        $l_mo_to_fr_or_custom.Visible = $false
-        $l_sa_to_su.Visible = $false
-    }
-    if ($setting -eq "1")
-    {
         $l_specialday.Visible = $false
         $lb_specialday.Visible = $false
         $lb_sa_to_su.Visible = $true
-        $lb_MO_to_FR.Visible =$true
+        $lb_MO_to_FR.Visible = $true
         $l_mo_to_fr_or_custom.Visible = $true
         $l_sa_to_su.Visible = $true
     }
-    if ($setting -eq "2")
+    if ($setting -eq "1")
     {
-        $l_specialday.Text = "Custom Eintrag"
+        $l_specialday.text = "Setting per Day"
         $l_specialday.Visible = $true
         $lb_specialday.Visible = $true
         $lb_sa_to_su.Visible = $false
-        $lb_MO_to_FR.Visible = $false
+        $lb_MO_to_FR.Visible =$false
         $l_mo_to_fr_or_custom.Visible = $false
         $l_sa_to_su.Visible = $false
     }
@@ -220,9 +239,9 @@ function updateview($setting) #Updates the GUI depending on the current option
 function setmarks()
 {
     #Load the PRTG Defaults
-    if ($cb_action.SelectedItem -eq "Standard editieren")
+    if ($cb_select_template.SelectedItem -eq "Default Template")
     {
-        updateview(1)
+        updateview(0)
         $exceldata = Import-Excel -WorksheetName PRTGDEFAULT_SETTING -path c:\temp\scheduler_config.xlsx
         clearselections
 
@@ -244,10 +263,10 @@ function setmarks()
     }
 
     #Load Selections for the Special Days
-    if ($cb_action.SelectedItem -eq "Feiertag editieren")
+    if ($cb_select_template.SelectedItem -eq "Public Holiday Template")
     {
         clearselections
-        updateview(0)
+        updateview(1)
 
         $exceldata = Import-Excel -WorksheetName PRTGSPECIALDAY_SETTING -path c:\temp\scheduler_config.xlsx
         
@@ -261,7 +280,7 @@ function setmarks()
         }
     }
 
-    if ($cb_action.SelectedItem -eq "Custom Eintrag editieren")
+    if ($cb_select_template.SelectedItem -eq "Custom Template 1")
     {
         clearselections
         updateview(2)
@@ -284,7 +303,7 @@ function setmarks()
 
 function writebacktoexcel() #Writes back the Settings to the Excel according to the Userinput
 {
-    if ($cb_action.SelectedItem -eq "Standard editieren")
+    if ($cb_select_template.SelectedItem -eq "Default Template")
     {
         $exceldata = Import-Excel -WorksheetName PRTGDEFAULT_SETTING -path c:\temp\scheduler_config.xlsx
 
@@ -319,10 +338,10 @@ function writebacktoexcel() #Writes back the Settings to the Excel according to 
         Export-Excel -inputobject $exceldata -WorksheetName PRTGDEFAULT_SETTING -path c:\temp\scheduler_config.xlsx   
     }
 
-    if ($cb_action.SelectedItem -eq "Feiertag editieren" -or $cb_action.SelectedItem -eq "Custom Eintrag editieren") #Same routine for both as they are similiar
+    if ($cb_select_template.SelectedItem -eq "Public Holiday Template" -or $cb_select_template.SelectedItem -eq "Custom Template 1") #Same routine for both as they are similiar
     {
-        if ($cb_action.SelectedItem -eq "Feiertag editieren" ){ $exceldata = Import-Excel -WorksheetName PRTGSPECIALDAY_SETTING -path c:\temp\scheduler_config.xlsx }
-        if ($cb_action.SelectedItem -eq "Custom Eintrag editieren" ){ $exceldata = Import-Excel -WorksheetName CUSTOM -path c:\temp\scheduler_config.xlsx }
+        if ($cb_select_template.SelectedItem -eq "Public Holiday Template" ){ $exceldata = Import-Excel -WorksheetName PRTGSPECIALDAY_SETTING -path c:\temp\scheduler_config.xlsx }
+        if ($cb_select_template.SelectedItem -eq "Custom Template 1" ){ $exceldata = Import-Excel -WorksheetName CUSTOM -path c:\temp\scheduler_config.xlsx }
 
         #Get Userselection from GUI
         $selections_sd = $lb_specialday.SelectedItems
@@ -344,8 +363,8 @@ function writebacktoexcel() #Writes back the Settings to the Excel according to 
             
         }
 
-        if ($cb_action.SelectedItem -eq "Feiertag editieren" ){ Export-Excel -inputobject $exceldata -WorksheetName PRTGSPECIALDAY_SETTING -path c:\temp\scheduler_config.xlsx }
-        if ($cb_action.SelectedItem -eq "Custom Eintrag editieren" ){ Export-Excel -inputobject $exceldata -WorksheetName CUSTOM -path c:\temp\scheduler_config.xlsx } 
+        if ($cb_select_template.SelectedItem -eq "Public Holiday Template" ){ Export-Excel -inputobject $exceldata -WorksheetName PRTGSPECIALDAY_SETTING -path c:\temp\scheduler_config.xlsx }
+        if ($cb_select_template.SelectedItem -eq "Custom Template 1" ){ Export-Excel -inputobject $exceldata -WorksheetName CUSTOM -path c:\temp\scheduler_config.xlsx } 
     }    
 }
 
@@ -369,24 +388,41 @@ function savedate($date)
 
 }
 
-################  BUTTON FUNCTIONS  ################$
+##### PRIMARY CODE #####
 
-$b_load_option.Add_Click(
+<#
+    Connect to PRTG Server with Passhash Methode, 
+    -Ignoressl is for testing, without it the connection will fail if
+    the trust fails
+#>
+
+if(!(Get-PrtgClient))
 {
-    if ($cb_action.SelectedItem -eq "Standard editieren")
-    {
-        setmarks
-    }
-    if ($cb_action.SelectedItem -eq "Feiertag editieren")
-    {
-        setmarks
-    }
-    if ($cb_action.SelectedItem -eq "Custom Eintrag editieren")
-    {
-        setmarks
-    }    
+    Connect-PrtgServer $prtgserver (New-Credential $prtguser $prtguserhash) -PassHash -IgnoreSSL -Force
+}
 
-    
+#Filling Scheduler Selection in GUI Form
+try
+{
+    foreach ($schedule in (Get-PrtgSchedule))
+    {
+        $cb_scheduler.Items.Add($schedule)
+   
+    }
+}
+catch
+{
+    writenotification("Unable to fetch Schedules, Please check the PRTG Server settings")
+}
+
+
+
+
+################  BUTTON FUNCTIONS  ################
+
+$b_load_template.Add_Click(
+{
+    setmarks   
 })
 
 $b_save_settings.Add_Click(
@@ -402,9 +438,10 @@ $b_save_date.Add_Click(
     
 })
 
-
-
-
+$b_select_excel.Add_Click(
+{
+    Get-Excelpath    
+})
 
 
 #Show the GUI after the inital code
