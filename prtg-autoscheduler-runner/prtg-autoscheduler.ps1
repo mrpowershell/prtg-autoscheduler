@@ -11,7 +11,7 @@ This programm is supposed to run daily at 00:01AM to update the schedule in PRTG
 #### GLOBAL VARS ####
 
 #Enter the Path of the configuration excel
-$excelpath = "c:\temp\scheduler_config.xlsx"
+$excelpath = "c:\temp\prtg-autoscheduler-config.xlsx"
 
 #define the ScheduleID which should be updated
 $prtg_scheduleid = "2226"
@@ -38,16 +38,15 @@ function getprtgvars($day,$daysetting)
         foreach ($entry in $prtg_default)
         {
 
-            if ($day -ne "Saturday" -or $day -ne "Sunday" -and $entry.MOFR -eq "1")
-            {          
+            if (($day -ne "Saturday" -and $day -ne "Sunday") -and $entry.MOFR -eq "1")
+            {      
                 if ($runner -eq $null) {[string]$runner = $prtg_reference | where Hour -eq $entry.Hour | Select-Object -Property $day -ExpandProperty $day}
                 else {$runner = "$runner" + "," +($prtg_reference | where Hour -eq $entry.Hour | Select-Object -Property $day -ExpandProperty $day)}  
             }
-            if ($day -eq "Saturday" -or $day -eq "Sunday" -and $entry.SASO -eq "1")
+            if (($day -eq "Saturday" -or $day -eq "Sunday") -and $entry.SASO -eq "1")
             {
                 if ($runner -eq $null) {[string]$runner = $prtg_reference | where Hour -eq $entry.Hour | Select-Object -Property $day -ExpandProperty $day}
                 else {$runner = "$runner" + "," +($prtg_reference | where Hour -eq $entry.Hour | Select-Object -Property $day -ExpandProperty $day)}              
-
             }
         }
 
@@ -60,7 +59,6 @@ function getprtgvars($day,$daysetting)
             {
                 if ($runner -eq $null) {[string]$runner = $prtg_reference | where Hour -eq $entry.Hour | Select-Object -Property $day -ExpandProperty $day}
                 else {$runner = "$runner" + "," +($prtg_reference | where Hour -eq $entry.Hour | Select-Object -Property $day -ExpandProperty $day)}            
-
             }
 
         }
@@ -70,16 +68,10 @@ function getprtgvars($day,$daysetting)
         foreach ($entry in $prtg_specialdaysetting)
         {
 
-            if ($day -ne "Saturday" -or $day -ne "Sunday" -and $entry.Enabled -eq "1")
+            if (($day -ne "Saturday" -and $day -ne "Sunday") -and $entry.Enabled -eq "1")
             {
                 if ($runner -eq $null) {[string]$runner = $prtg_reference | where Hour -eq $entry.Hour | Select-Object -Property $day -ExpandProperty $day}
                 else {$runner = "$runner" + "," +($prtg_reference | where Hour -eq $entry.Hour | Select-Object -Property $day -ExpandProperty $day)}            
-
-            }
-            if ($day -eq "Saturday" -or $day -eq "Sunday" -and $entry.Enabled -eq "1")
-            {
-                if ($runner -eq $null) {[string]$runner = $prtg_reference | where Hour -eq $entry.Hour | Select-Object -Property $day -ExpandProperty $day}
-                else {$runner = "$runner" + "," +($prtg_reference | where Hour -eq $entry.Hour | Select-Object -Property $day -ExpandProperty $day)}             
 
             }
         }
