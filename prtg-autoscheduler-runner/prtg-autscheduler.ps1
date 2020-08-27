@@ -182,20 +182,13 @@ if ($currentdayname -eq "Sonntag")
     $SO = $currentdate
 }
 
-#echo $mo,$di,$mi,$do,$fr,$sa,$so   FOR DEBUGGING
-
 #Define which Template needs to be assigned
-
-
-
 
 if ($specialdays -match $mo)
 {
     $temp = $specialdays | where DATE -eq $mo | Select-Object -Property CUSTOMSETTINGS -ExpandProperty CUSTOMSETTINGS
     $schedulevalues = (getprtgvars "Monday" "$temp")
 }else {$schedulevalues = getprtgvars "Monday" "0"}
-
-
 
 if ($specialdays -match $di)
 {
