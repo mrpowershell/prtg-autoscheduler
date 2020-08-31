@@ -148,7 +148,7 @@ $b_select_excel.location         = New-Object System.Drawing.Point(426,20)
 $b_select_excel.Font             = New-Object System.Drawing.Font('Microsoft Sans Serif',10)
 
 $gb_update_date                  = New-Object system.Windows.Forms.Groupbox
-$gb_update_date.height           = 307
+$gb_update_date.height           = 210
 $gb_update_date.width            = 376
 $gb_update_date.text             = "Apply Template to Date"
 $gb_update_date.location         = New-Object System.Drawing.Point(390,70)
@@ -168,15 +168,34 @@ $b_save_date.height              = 30
 $b_save_date.location            = New-Object System.Drawing.Point(209,63)
 $b_save_date.Font                = New-Object System.Drawing.Font('Microsoft Sans Serif',10)
 
+$gb_set_dates                    = New-Object system.Windows.Forms.Groupbox
+$gb_set_dates.height             = 302
+$gb_set_dates.width              = 376
+$gb_set_dates.text               = "Current configured Dates"
+$gb_set_dates.location           = New-Object System.Drawing.Point(390,297)
+
+$lb_current_dates                = New-Object system.Windows.Forms.ListBox
+$lb_current_dates.width          = 360
+$lb_current_dates.height         = 242
+$lb_current_dates.location       = New-Object System.Drawing.Point(8,19)
+
+$b_load_dates                    = New-Object system.Windows.Forms.Button
+$b_load_dates.text               = "Load Days"
+$b_load_dates.width              = 155
+$b_load_dates.height             = 30
+$b_load_dates.location           = New-Object System.Drawing.Point(111,263)
+$b_load_dates.Font               = New-Object System.Drawing.Font('Microsoft Sans Serif',10)
+
 $calendar = New-Object Windows.Forms.MonthCalendar -Property @{
     ShowTodayCircle   = $true
     MaxSelectionCount = 1
     location = New-Object System.Drawing.Point(8,30)
 }
 
-$form_PRTGSCHEDULER.controls.AddRange(@($l_notification,$gb_savetemplate,$tb_excelpath,$b_select_excel,$gb_update_date))
+$form_PRTGSCHEDULER.controls.AddRange(@($gb_set_dates,$l_notification,$gb_savetemplate,$tb_excelpath,$b_select_excel,$gb_update_date))
 $gb_savetemplate.controls.AddRange(@($lb_mo_to_fr,$lb_sa_to_su,$cb_select_template,$b_save_settings,$b_load_template,$l_mo_to_fr_or_custom,$l_sa_to_su,$lb_specialday,$l_specialday))
 $gb_update_date.controls.AddRange(@($calendar,$cb_select_template_day,$b_save_date))
+$gb_set_dates.controls.AddRange(@($lb_current_dates,$b_load_dates))
 
 
 #END OF GUICODE
@@ -391,6 +410,31 @@ function savedate($date)
 
 }
 
+function loaddates()
+{
+    $exceldata = Import-Excel -WorksheetName SPECIALDAYS -path $tb_excelpath.Text
+    
+    #Reset Listbox
+    $lb_current_dates.Items.Clear()
+
+    foreach ($day in $exceldata)
+    {
+        if ($day.CUSTOMSETTINGS -eq "1")
+        {
+            $daval = $day.DATE
+            $lb_syntax = "$daval uses Public Holday Settings."
+            $lb_current_dates.Items.Add($lb_syntax)
+        }
+        if ($day.CUSTOMSETTINGS -eq "2")
+        {
+            $daval = $day.DATE
+            $lb_syntax = "$daval uses Custom (1) Settings."
+            $lb_current_dates.Items.Add($lb_syntax)
+        }
+        
+    } 
+}
+
 ##### PRIMARY CODE #####
 
 <#
@@ -443,6 +487,7 @@ $b_save_date.Add_Click(
         $dateinput = $calendar.SelectionStart
         $dateshort = $dateinput.ToShortDateString()
         savedate($dateshort)
+        loaddates
     }
     else { writenotification("Please select Excel first.") }
     
@@ -452,6 +497,15 @@ $b_select_excel.Add_Click(
 {
     Get-Excelpath    
 })
+
+$b_load_dates.Add_Click({
+    if ($tb_excelpath.Text -ne "")
+    {
+        loaddates
+    }
+    else { writenotification("Please select Excel first.") }
+})   
+
 
 
 #Show the GUI after the inital code
