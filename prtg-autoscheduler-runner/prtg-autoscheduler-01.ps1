@@ -26,6 +26,7 @@ $prtguserhash = "3477709542"
 
 $prtg_reference = Import-Excel -WorksheetName REFERENCE -path $excelpath
 $prtg_custom = Import-Excel -WorksheetName CUSTOM -path $excelpath
+$prtg_custom2 = Import-Excel -WorksheetName CUSTOM2 -path $excelpath
 $prtg_specialdaysetting = Import-Excel -WorksheetName PRTGSPECIALDAY_SETTING -path $excelpath
 $prtg_default = Import-Excel -WorksheetName PRTGDEFAULT_SETTING -path $excelpath
 $specialdays = Import-Excel -WorksheetName SPECIALDAYS -path $excelpath
@@ -54,6 +55,18 @@ function getprtgvars($day,$daysetting)
     if ($daysetting -eq 2)
     {
         foreach ($entry in $prtg_custom)
+        {
+            if ($entry.Enabled -eq "1")
+            {
+                if ($runner -eq $null) {[string]$runner = $prtg_reference | where Hour -eq $entry.Hour | Select-Object -Property $day -ExpandProperty $day}
+                else {$runner = "$runner" + "," +($prtg_reference | where Hour -eq $entry.Hour | Select-Object -Property $day -ExpandProperty $day)}            
+            }
+
+        }
+    }
+    if ($daysetting -eq 3)
+    {
+        foreach ($entry in $prtg_custom2)
         {
             if ($entry.Enabled -eq "1")
             {

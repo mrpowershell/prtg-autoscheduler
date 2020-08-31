@@ -58,7 +58,7 @@ $cb_select_template              = New-Object system.Windows.Forms.ComboBox
 $cb_select_template.text         = "Template"
 $cb_select_template.width        = 155
 $cb_select_template.height       = 20
-@('Default Template','Public Holiday Template','Custom Template 1') | ForEach-Object {[void] $cb_select_template.Items.Add($_)}
+@('Default Template','Public Holiday Template','Custom Template 1','Custom Template 2') | ForEach-Object {[void] $cb_select_template.Items.Add($_)}
 $cb_select_template.location     = New-Object System.Drawing.Point(52,31)
 $cb_select_template.Font         = New-Object System.Drawing.Font('Microsoft Sans Serif',10)
 
@@ -157,7 +157,7 @@ $cb_select_template_day          = New-Object system.Windows.Forms.ComboBox
 $cb_select_template_day.text     = "Template"
 $cb_select_template_day.width    = 155
 $cb_select_template_day.height   = 20
-@('Default Template','Public Holiday Template','Custom Template 1') | ForEach-Object {[void] $cb_select_template_day.Items.Add($_)}
+@('Default Template','Public Holiday Template','Custom Template 1','Custom Template 2') | ForEach-Object {[void] $cb_select_template_day.Items.Add($_)}
 $cb_select_template_day.location  = New-Object System.Drawing.Point(209,31)
 $cb_select_template_day.Font     = New-Object System.Drawing.Font('Microsoft Sans Serif',10)
 
@@ -309,7 +309,7 @@ function setmarks()
     if ($cb_select_template.SelectedItem -eq "Custom Template 1")
     {
         clearselections
-        updateview(2)
+        updateview(1)
 
         $exceldata = Import-Excel -WorksheetName CUSTOM -path $tb_excelpath.Text
         
@@ -322,7 +322,22 @@ function setmarks()
             }
         }
     }
-     
+    if ($cb_select_template.SelectedItem -eq "Custom Template 2")
+    {
+        clearselections
+        updateview(1)
+
+        $exceldata = Import-Excel -WorksheetName CUSTOM2 -path $tb_excelpath.Text
+        
+        #Select the Hours according to the Values in the Excel
+        foreach ($entry in $exceldata)
+        {
+            if ($entry.ENABLED -eq "1")
+            {
+                $lb_specialday.SelectedItem = $entry.HOUR
+            }
+        }
+    }     
     
     
 }
@@ -363,10 +378,11 @@ function writebacktoexcel()
         Export-Excel -inputobject $exceldata -WorksheetName PRTGDEFAULT_SETTING -path $tb_excelpath.Text   
     }
 
-    if ($cb_select_template.SelectedItem -eq "Public Holiday Template" -or $cb_select_template.SelectedItem -eq "Custom Template 1") #Same routine for both as they are similiar
+    if ($cb_select_template.SelectedItem -eq "Public Holiday Template" -or $cb_select_template.SelectedItem -eq "Custom Template 1" -or $cb_select_template.SelectedItem -eq "Custom Template 2") #Same routine for both as they are similiar
     {
         if ($cb_select_template.SelectedItem -eq "Public Holiday Template" ){ $exceldata = Import-Excel -WorksheetName PRTGSPECIALDAY_SETTING -path $tb_excelpath.Text }
         if ($cb_select_template.SelectedItem -eq "Custom Template 1" ){ $exceldata = Import-Excel -WorksheetName CUSTOM -path $tb_excelpath.Text }
+        if ($cb_select_template.SelectedItem -eq "Custom Template 2" ){ $exceldata = Import-Excel -WorksheetName CUSTOM2 -path $tb_excelpath.Text }
 
         foreach ($entry in $exceldata)
         {
@@ -385,7 +401,8 @@ function writebacktoexcel()
         }
 
         if ($cb_select_template.SelectedItem -eq "Public Holiday Template" ){ Export-Excel -inputobject $exceldata -WorksheetName PRTGSPECIALDAY_SETTING -path $tb_excelpath.Text }
-        if ($cb_select_template.SelectedItem -eq "Custom Template 1" ){ Export-Excel -inputobject $exceldata -WorksheetName CUSTOM -path $tb_excelpath.Text } 
+        if ($cb_select_template.SelectedItem -eq "Custom Template 1" ){ Export-Excel -inputobject $exceldata -WorksheetName CUSTOM -path $tb_excelpath.Text }
+        if ($cb_select_template.SelectedItem -eq "Custom Template 2" ){ Export-Excel -inputobject $exceldata -WorksheetName CUSTOM2 -path $tb_excelpath.Text }  
     }    
 }
 
@@ -401,9 +418,11 @@ function savedate($date)
         $search = $exceldata | Where-Object {$_.DATE -eq $date}
         if ($cb_select_template_day.SelectedItem -eq "Public Holiday Template") {$search.CUSTOMSETTINGS = 1}
         if ($cb_select_template_day.SelectedItem -eq "Custom Template 1") {$search.CUSTOMSETTINGS = 2}
+        if ($cb_select_template_day.SelectedItem -eq "Custom Template 2") {$search.CUSTOMSETTINGS = 3}
     }
     if ($cb_select_template_day.SelectedItem -eq "Public Holiday Template") {$search.CUSTOMSETTINGS = 1}
     if ($cb_select_template_day.SelectedItem -eq "Custom Template 1") {$search.CUSTOMSETTINGS = 2}
+    if ($cb_select_template_day.SelectedItem -eq "Custom Template 2") {$search.CUSTOMSETTINGS = 3}
     if ($cb_select_template_day.SelectedItem -eq "Default Template") {$search.CUSTOMSETTINGS = 0}
 
     Export-Excel -inputobject $exceldata -WorksheetName SPECIALDAYS -path $tb_excelpath.Text
@@ -421,14 +440,17 @@ function loaddates()
     {
         if ($day.CUSTOMSETTINGS -eq "1")
         {
-            $daval = $day.DATE
-            $lb_syntax = "$daval uses Public Holday Settings."
+            $lb_syntax = $day.DATE +" uses Public Holday Setting."
             $lb_current_dates.Items.Add($lb_syntax)
         }
         if ($day.CUSTOMSETTINGS -eq "2")
         {
-            $daval = $day.DATE
-            $lb_syntax = "$daval uses Custom (1) Settings."
+            $lb_syntax = $day.DATE + " uses Custom (1) Setting."
+            $lb_current_dates.Items.Add($lb_syntax)
+        }
+        if ($day.CUSTOMSETTINGS -eq "3")
+        {
+            $lb_syntax = $day.DATE + " uses Custom (2) Setting."
             $lb_current_dates.Items.Add($lb_syntax)
         }
         
