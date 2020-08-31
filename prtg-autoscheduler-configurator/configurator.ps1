@@ -30,6 +30,7 @@ $form_PRTGSCHEDULER.ClientSize   = New-Object System.Drawing.Point(788,637)
 $form_PRTGSCHEDULER.text         = "PRTG Scheduler GUI"
 $form_PRTGSCHEDULER.TopMost      = $false
 
+<# Hidden for the Moment
 $l_selectscheduler               = New-Object system.Windows.Forms.Label
 $l_selectscheduler.text          = "Select Schedule:"
 $l_selectscheduler.AutoSize      = $true
@@ -37,6 +38,7 @@ $l_selectscheduler.width         = 25
 $l_selectscheduler.height        = 10
 $l_selectscheduler.location      = New-Object System.Drawing.Point(41,26)
 $l_selectscheduler.Font          = New-Object System.Drawing.Font('Microsoft Sans Serif',10)
+#>
 
 $lb_mo_to_fr                     = New-Object system.Windows.Forms.ListBox
 $lb_mo_to_fr.width               = 80
@@ -60,11 +62,13 @@ $cb_select_template.height       = 20
 $cb_select_template.location     = New-Object System.Drawing.Point(52,31)
 $cb_select_template.Font         = New-Object System.Drawing.Font('Microsoft Sans Serif',10)
 
+<# Hidden for the Moment
 $cb_scheduler                    = New-Object system.Windows.Forms.ComboBox
 $cb_scheduler.width              = 241
 $cb_scheduler.height             = 20
 $cb_scheduler.location           = New-Object System.Drawing.Point(158,24)
 $cb_scheduler.Font               = New-Object System.Drawing.Font('Microsoft Sans Serif',10)
+#>
 
 $b_save_settings                 = New-Object system.Windows.Forms.Button
 $b_save_settings.text            = "Save Template"
@@ -170,7 +174,7 @@ $calendar = New-Object Windows.Forms.MonthCalendar -Property @{
     location = New-Object System.Drawing.Point(8,30)
 }
 
-$form_PRTGSCHEDULER.controls.AddRange(@($l_selectscheduler,$cb_scheduler,$l_notification,$gb_savetemplate,$tb_excelpath,$b_select_excel,$gb_update_date))
+$form_PRTGSCHEDULER.controls.AddRange(@($l_notification,$gb_savetemplate,$tb_excelpath,$b_select_excel,$gb_update_date))
 $gb_savetemplate.controls.AddRange(@($lb_mo_to_fr,$lb_sa_to_su,$cb_select_template,$b_save_settings,$b_load_template,$l_mo_to_fr_or_custom,$l_sa_to_su,$lb_specialday,$l_specialday))
 $gb_update_date.controls.AddRange(@($calendar,$cb_select_template_day,$b_save_date))
 
