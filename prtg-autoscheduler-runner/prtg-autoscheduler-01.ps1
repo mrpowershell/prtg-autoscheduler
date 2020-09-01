@@ -19,7 +19,7 @@ $prtg_scheduleid = "2226"
 #Define the Servername, User and the passhash which the programm uses to connect to PRTG
 $prtgserver = "127.0.0.1"
 $prtguser="prtgadmin"
-$prtguserhash = "3477709542"
+$prtguserhash = "1234567890"
 
 
 ################  MAIN CODE, DO NOT EDIT THE CODE  ################

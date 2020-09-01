@@ -192,7 +192,24 @@ $calendar = New-Object Windows.Forms.MonthCalendar -Property @{
     location = New-Object System.Drawing.Point(8,30)
 }
 
-$form_PRTGSCHEDULER.controls.AddRange(@($gb_set_dates,$l_notification,$gb_savetemplate,$tb_excelpath,$b_select_excel,$gb_update_date))
+$l_nowediting                    = New-Object system.Windows.Forms.Label
+$l_nowediting.text               = "Now editing: "
+$l_nowediting.AutoSize           = $true
+$l_nowediting.width              = 25
+$l_nowediting.height             = 10
+$l_nowediting.location           = New-Object System.Drawing.Point(18,29)
+$l_nowediting.Font               = New-Object System.Drawing.Font('Microsoft Sans Serif',10)
+
+$l_excelname                     = New-Object system.Windows.Forms.Label
+$l_excelname.AutoSize            = $true
+$l_excelname.width               = 25
+$l_excelname.height              = 10
+$l_excelname.location            = New-Object System.Drawing.Point(100,26)
+$l_excelname.Font                = New-Object System.Drawing.Font('Microsoft Sans Serif',12,[System.Drawing.FontStyle]([System.Drawing.FontStyle]::Bold))
+$l_excelname.ForeColor           = [System.Drawing.ColorTranslator]::FromHtml("#f5a623")
+
+
+$form_PRTGSCHEDULER.controls.AddRange(@($l_nowediting,$l_excelname,$gb_set_dates,$l_notification,$gb_savetemplate,$tb_excelpath,$b_select_excel,$gb_update_date))
 $gb_savetemplate.controls.AddRange(@($lb_mo_to_fr,$lb_sa_to_su,$cb_select_template,$b_save_settings,$b_load_template,$l_mo_to_fr_or_custom,$l_sa_to_su,$lb_specialday,$l_specialday))
 $gb_update_date.controls.AddRange(@($calendar,$cb_select_template_day,$b_save_date))
 $gb_set_dates.controls.AddRange(@($lb_current_dates,$b_load_dates))
@@ -517,7 +534,8 @@ $b_save_date.Add_Click(
 
 $b_select_excel.Add_Click(
 {
-    Get-Excelpath    
+    Get-Excelpath
+    $l_excelname.Text = $tb_excelpath.Text | Split-Path -Leaf    
 })
 
 $b_load_dates.Add_Click({
@@ -532,3 +550,4 @@ $b_load_dates.Add_Click({
 
 #Show the GUI after the inital code
 [void]$form_PRTGSCHEDULER.ShowDialog()
+
