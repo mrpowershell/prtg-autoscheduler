@@ -7,16 +7,6 @@ Install-Package ImportExcel
 
 #>
 
-
-#### GLOBAL VARS ####
-
-#Define the Servername, User and the passhash which the programm uses to connect to PRTG
-
-$prtgserver = "127.0.0.1"
-$prtguser="prtgadmin"
-$prtguserhash = "3477709542"
-
-
 ################  MAIN CODE, DO NOT EDIT THE CODE BELOW THIS LINE   ################
 
 # This form was created using POSHGUI.com  a free online gui designer for PowerShell
@@ -30,7 +20,7 @@ $form_PRTGSCHEDULER.ClientSize   = New-Object System.Drawing.Point(788,637)
 $form_PRTGSCHEDULER.text         = "PRTG Scheduler GUI"
 $form_PRTGSCHEDULER.TopMost      = $false
 
-<# Hidden for the Moment
+<# Hidden for the moment
 $l_selectscheduler               = New-Object system.Windows.Forms.Label
 $l_selectscheduler.text          = "Select Schedule:"
 $l_selectscheduler.AutoSize      = $true
@@ -62,7 +52,7 @@ $cb_select_template.height       = 20
 $cb_select_template.location     = New-Object System.Drawing.Point(52,31)
 $cb_select_template.Font         = New-Object System.Drawing.Font('Microsoft Sans Serif',10)
 
-<# Hidden for the Moment
+<# Hidden for the moment
 $cb_scheduler                    = New-Object system.Windows.Forms.ComboBox
 $cb_scheduler.width              = 241
 $cb_scheduler.height             = 20
@@ -509,14 +499,26 @@ catch
 
 $b_load_template.Add_Click(
 {
-    if ($tb_excelpath.Text -ne "") {setmarks}
-    else { writenotification("Please select Excel first.") }
+    if ($tb_excelpath.Text -ne "")
+    {
+        setmarks
+    }
+    else 
+    {
+        writenotification("Please select Excel first.") 
+    }
 })
 
 $b_save_settings.Add_Click(
 {
-    if ($tb_excelpath.Text -ne "") {writebacktoexcel}
-    else { writenotification("Please select Excel first.") }
+    if ($tb_excelpath.Text -ne "") 
+    {
+        writebacktoexcel
+    }
+    else 
+    {
+        writenotification("Please select Excel first.") 
+    }
 })
 
 $b_save_date.Add_Click(
@@ -528,7 +530,10 @@ $b_save_date.Add_Click(
         savedate($dateshort)
         loaddates
     }
-    else { writenotification("Please select Excel first.") }
+    else 
+    {
+        writenotification("Please select Excel first.") 
+    }
     
 })
 
@@ -543,7 +548,10 @@ $b_load_dates.Add_Click({
     {
         loaddates
     }
-    else { writenotification("Please select Excel first.") }
+    else 
+    {
+        writenotification("Please select Excel first.") 
+    }
 })   
 
 
