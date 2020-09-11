@@ -37,4 +37,15 @@ It is best to do this on the same server where a Runner is already running. Copy
 
 Next you need to open the Runner ps1 file and edit the Settings there. i would recommend to create a new user for the PRTG Autoscheduler. The user needs admin privileges to edit the schedule(s). Note: For the PRTGSERVER do not enter the IP, enter the FQDN like https://monitoring.company.com If your PRTG Server has no valid SSL Certificate, check the next step.
 
-![runner](https://github.com/mrpowershell/prtg-autoscheduler/raw/master/Images/Layout2.png)
+![runner](https://github.com/mrpowershell/prtg-autoscheduler/raw/master/Images/runner_configuration.png)
+
+**If you have no valid SSL in PRTG:**
+
+Search for the following line in the Runner Script:
+
+    Connect-PrtgServer $prtgserver (New-Credential $prtguser $prtguserhash) -PassHash -Force
+
+Edit it to the following:
+
+    Connect-PrtgServer $prtgserver (New-Credential $prtguser $prtguserhash) -PassHash -Force -IgnoreSSL
+
