@@ -11,7 +11,7 @@ This programm is supposed to run daily at 00:01AM to update the schedule in PRTG
 #### GLOBAL VARS ####
 
 #Enter the Path of the configuration excel
-$excelpath = "c:\temp\prtg-autoscheduler-config.xlsx"
+$excelpath = "c:\PRTGTOOL\CONFIG\prtg-autoscheduler-config.xlsx"
 
 #define the ScheduleID which should be updated
 $prtg_scheduleid = "2226"
@@ -96,13 +96,12 @@ function getprtgvars($day,$daysetting)
 
 <#
     Connect to PRTG Server with Passhash Methode, 
-    -Ignoressl is for testing, without it the connection will fail if
-    the trust fails
+    Add -IgnoreSSL if you dont have an valid SSL Certificate
 #>
 
 if(!(Get-PrtgClient))
 {
-    Connect-PrtgServer $prtgserver (New-Credential $prtguser $prtguserhash) -PassHash -IgnoreSSL -Force
+    Connect-PrtgServer $prtgserver (New-Credential $prtguser $prtguserhash) -PassHash -Force
 }
 
 #Saving the Scheduler Ids
