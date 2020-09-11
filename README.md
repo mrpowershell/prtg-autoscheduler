@@ -33,3 +33,4 @@ On the server where the Runner should run, the module ImportExcel and the module
 On the server where the Runner should run, create a folder PRTG-Tool on C:\ and copy the Runner prtg-autoscheduler-01.ps1 into this folder.
 
 It is best to do this on the same server where a Runner is already running. Copy the configuration Excel into a subfolder CONFIG and rename it logically like the Runner: prtg-schedulename-config.xlsx
+![Layout](https://github.com/mrpowershell/prtg-autoscheduler/raw/master/Images/Layout2.png)
