@@ -96,7 +96,27 @@ To delete an entry or set it to default, simply select the tag and apply the def
 
 See Delete entry, Simply select the tag again and choose another template. 
 
-Variant 2: Directly in Excel
+**Variant 2: Directly in Excel**
+
+This variant is not recommended because you could format the Excel incorrectly. When the Excel is open, switch to the SPECIALDAYS tab:
+![excel1](https://github.com/mrpowershell/prtg-autoscheduler/raw/master/Images/Excel_1.png)
+
+Afterwards the days can be entered manually. The template which is to be used on this day can be defined under CUSTOMSETTINGS: 
+
+0 -> Default Template <-- These entries are ignored because they are the default tag.
+
+1 -> Holiday Template
+
+2 -> CUSTOM 1 Template
+
+3 -> CUSTOM 2 Template
+
+**IMPORTANT: Make sure that column A is defined as TEXT and NOT as date!**
+
+![excel2](https://github.com/mrpowershell/prtg-autoscheduler/raw/master/Images/Excel_2.png)
+
+
+
 
 
 
