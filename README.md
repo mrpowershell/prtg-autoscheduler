@@ -69,3 +69,34 @@ To edit the default template, which is **ALWAYS** set if the day is not further 
 
 ![GUI1](https://github.com/mrpowershell/prtg-autoscheduler/raw/master/Images/GUI_1.png)
 
+The current setting is now loaded from Excel. All blue times represent the hours that are activated. The template can now be adjusted as desired. To save the setting, click on Save Template. You can see if it was loaded correctly by clicking Load again or by opening the Excel manually.
+
+**Edit PRTG Autoscheduler Holiday and Custom Template(s) **
+
+To change the default holiday or custom 1 and custom 2 settings, follow the same procedure as for the standard template. Here, however, no distinction is made between MO-FR, SA-SO, only the hours. The reason for this is that these templates only refer to one day.
+
+![GUI2](https://github.com/mrpowershell/prtg-autoscheduler/raw/master/Images/GUI_2.png)
+
+**PRTG Autoscheduler: Define Holidays and Special Days**
+
+**Variant 1: With the Configurator**
+
+To set holidays or special days for the autoscheduler, open the Configurator and open the desired Excel by editing the holidays.
+
+Then select the day you want to define in the calendar and choose the template that should be applied to the day. The entry must be saved with Apply Template. In Current configured Dates the day will now appear that was defined:
+
+![GUI3](https://github.com/mrpowershell/prtg-autoscheduler/raw/master/Images/GUI_3.png)
+
+
+**Delete entry**
+ 
+To delete an entry or set it to default, simply select the tag and apply the default template. The tag will then disappear from the list.
+
+**Overwrite entry** 
+
+See Delete entry, Simply select the tag again and choose another template. 
+
+Variant 2: Directly in Excel
+
+
+
