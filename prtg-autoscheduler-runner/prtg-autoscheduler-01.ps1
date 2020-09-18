@@ -108,7 +108,7 @@ if(!(Get-PrtgClient))
 
 #Saving the Scheduler Ids
 
-$schedulers = Get-PrtgSchedule
+#$schedulers = Get-PrtgSchedule <- unused atm
 
 #Getting Date Configuration, the hard way :)
 
@@ -117,7 +117,7 @@ $currentdate = get-date -Uformat %d.%m.%Y
 
 #No lets get the dates of the other days
 
-if ($currentdayname -eq "Montag")
+if ($currentdayname -eq "Monday" -or $currentdayname -eq "Montag")
 {
     $MO = $currentdate
     $DI = (get-date).AddDays(1).ToString("dd.MM.yyy")
@@ -127,7 +127,7 @@ if ($currentdayname -eq "Montag")
     $SA = (get-date).AddDays(5).ToString("dd.MM.yyy")
     $SO = (get-date).AddDays(6).ToString("dd.MM.yyy")
 }
-if ($currentdayname -eq "Dienstag")
+if ($currentdayname -eq "Tuesday" -or $currentdayname -eq "Tuesday")
 {
     $MO = (get-date).AddDays(-1).ToString("dd.MM.yyy")
     $DI = $currentdate
@@ -137,7 +137,7 @@ if ($currentdayname -eq "Dienstag")
     $SA = (get-date).AddDays(4).ToString("dd.MM.yyy")
     $SO = (get-date).AddDays(5).ToString("dd.MM.yyy")
 }
-if ($currentdayname -eq "Mittwoch")
+if ($currentdayname -eq "Wednesday" -or $currentdayname -eq "Wednesday")
 {
     $MO = (get-date).AddDays(-2).ToString("dd.MM.yyy")
     $DI = (get-date).AddDays(-1).ToString("dd.MM.yyy")
@@ -147,7 +147,7 @@ if ($currentdayname -eq "Mittwoch")
     $SA = (get-date).AddDays(3).ToString("dd.MM.yyy")
     $SO = (get-date).AddDays(4).ToString("dd.MM.yyy")
 }
-if ($currentdayname -eq "Donnerstag")
+if ($currentdayname -eq "Thursday" -or $currentdayname -eq "Thursday")
 {
     $MO = (get-date).AddDays(-3).ToString("dd.MM.yyy")
     $DI = (get-date).AddDays(-2).ToString("dd.MM.yyy")
@@ -157,7 +157,7 @@ if ($currentdayname -eq "Donnerstag")
     $SA = (get-date).AddDays(2).ToString("dd.MM.yyy")
     $SO = (get-date).AddDays(3).ToString("dd.MM.yyy")
 }
-if ($currentdayname -eq "Freitag")
+if ($currentdayname -eq "Freitag" -or $currentdayname -eq "Friday")
 {
     $MO = (get-date).AddDays(-4).ToString("dd.MM.yyy")
     $DI = (get-date).AddDays(-3).ToString("dd.MM.yyy")
@@ -167,7 +167,7 @@ if ($currentdayname -eq "Freitag")
     $SA = (get-date).AddDays(1).ToString("dd.MM.yyy")
     $SO = (get-date).AddDays(2).ToString("dd.MM.yyy")
 }
-if ($currentdayname -eq "Samstag")
+if ($currentdayname -eq "Samstag" -or $currentdayname -eq "Saturday")
 {
     $MO = (get-date).AddDays(-5).ToString("dd.MM.yyy")
     $DI = (get-date).AddDays(-4).ToString("dd.MM.yyy")
@@ -177,7 +177,7 @@ if ($currentdayname -eq "Samstag")
     $SA = $currentdate
     $SO = (get-date).AddDays(1).ToString("dd.MM.yyy")
 }
-if ($currentdayname -eq "Sonntag")
+if ($currentdayname -eq "Sonntag" -or $currentdayname -eq "Sunday")
 {
     $MO = (get-date).AddDays(-6).ToString("dd.MM.yyy")
     $DI = (get-date).AddDays(-5).ToString("dd.MM.yyy")
