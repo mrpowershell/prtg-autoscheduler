@@ -5,6 +5,8 @@ Install-Package PrtgAPI
 Install-Package ImportExcel
 
 This programm is supposed to run daily at 00:01AM to update the schedule in PRTG
+
+Written by Sebastian Kurz / Ti&M AG
 #>
 
 
