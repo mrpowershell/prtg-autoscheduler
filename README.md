@@ -71,13 +71,13 @@ To edit the default template, which is **ALWAYS** set if the day is not further 
 
 The current setting is now loaded from Excel. All blue times represent the hours that are activated. The template can now be adjusted as desired. To save the setting, click on Save Template. You can see if it was loaded correctly by clicking Load again or by opening the Excel manually.
 
-####Edit PRTG Autoscheduler Holiday and Custom Template(s)
+#### Edit PRTG Autoscheduler Holiday and Custom Template(s)
 
 To change the default holiday or custom 1 and custom 2 settings, follow the same procedure as for the standard template. Here, however, no distinction is made between MO-FR, SA-SO, only the hours. The reason for this is that these templates only refer to one day.
 
 ![GUI2](https://github.com/mrpowershell/prtg-autoscheduler/raw/master/Images/GUI_2.png)
 
-####PRTG Autoscheduler: Define Holidays and Special Days
+#### PRTG Autoscheduler: Define Holidays and Special Days
 
 **Variant 1: With the Configurator**
 
