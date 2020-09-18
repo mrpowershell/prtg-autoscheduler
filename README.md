@@ -23,6 +23,15 @@ The formatting in Excel must not be adjusted, otherwise the Runner can no longer
 - The [ImportExcel](https://github.com/dfinke/ImportExcel) module is required.
 - The [PRTGAPI](https://github.com/lordmilko/PrtgAPI) module is required.
 
+#### Todo list for future updates
+
+The Autoscheduler is working atm but not yet finished. The Following Tasks will be done in the future:
+
+  - One Runner for Multiple Schedules
+  - Easier and modular configuration 
+  - Mailreporting
+
+
 
 # Instructions and Setup
 
