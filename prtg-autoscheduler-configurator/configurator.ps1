@@ -5,6 +5,7 @@ The Programm requires the following Modules:
 Install-Package PrtgAPI
 Install-Package ImportExcel
 
+Written by Sebastian Kurz / Ti&M AG
 #>
 
 ################  MAIN CODE, DO NOT EDIT THE CODE BELOW THIS LINE   ################
