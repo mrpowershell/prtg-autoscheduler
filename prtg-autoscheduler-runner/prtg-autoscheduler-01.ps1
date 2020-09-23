@@ -16,7 +16,7 @@ Written by Sebastian Kurz / Ti&M AG
 $excelpath = "c:\PRTGTOOL\CONFIG\prtg-autoscheduler-config.xlsx"
 
 #define the ScheduleID which should be updated
-$prtg_scheduleid = "2226"
+$prtg_scheduleid = "1234"
 
 #Define the Servername, User and the passhash which the programm uses to connect to PRTG
 $prtgserver = "127.0.0.1"
