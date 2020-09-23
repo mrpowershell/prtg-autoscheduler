@@ -127,7 +127,7 @@ if ($currentdayname -eq "Monday" -or $currentdayname -eq "Montag")
     $SA = (get-date).AddDays(5).ToString("dd.MM.yyy")
     $SO = (get-date).AddDays(6).ToString("dd.MM.yyy")
 }
-if ($currentdayname -eq "Tuesday" -or $currentdayname -eq "Tuesday")
+if ($currentdayname -eq "Tuesday" -or $currentdayname -eq "Dienstag")
 {
     $MO = (get-date).AddDays(-1).ToString("dd.MM.yyy")
     $DI = $currentdate
@@ -137,7 +137,7 @@ if ($currentdayname -eq "Tuesday" -or $currentdayname -eq "Tuesday")
     $SA = (get-date).AddDays(4).ToString("dd.MM.yyy")
     $SO = (get-date).AddDays(5).ToString("dd.MM.yyy")
 }
-if ($currentdayname -eq "Wednesday" -or $currentdayname -eq "Wednesday")
+if ($currentdayname -eq "Wednesday" -or $currentdayname -eq "Mittwoch")
 {
     $MO = (get-date).AddDays(-2).ToString("dd.MM.yyy")
     $DI = (get-date).AddDays(-1).ToString("dd.MM.yyy")
@@ -147,7 +147,7 @@ if ($currentdayname -eq "Wednesday" -or $currentdayname -eq "Wednesday")
     $SA = (get-date).AddDays(3).ToString("dd.MM.yyy")
     $SO = (get-date).AddDays(4).ToString("dd.MM.yyy")
 }
-if ($currentdayname -eq "Thursday" -or $currentdayname -eq "Thursday")
+if ($currentdayname -eq "Thursday" -or $currentdayname -eq "Donnerstag")
 {
     $MO = (get-date).AddDays(-3).ToString("dd.MM.yyy")
     $DI = (get-date).AddDays(-2).ToString("dd.MM.yyy")
